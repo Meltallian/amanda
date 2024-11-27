@@ -1,0 +1,29 @@
+One-way ANOVA results:
+              sum_sq     df         F        PR(>F)
+C(Group)   63.800000    4.0  18.35251  1.311966e-13
+Residual  282.454545  325.0       NaN           NaN
+
+Two-way ANOVA results:
+                      sum_sq     df          F        PR(>F)
+C(Group)           63.800000    4.0  18.141692  1.919627e-13
+C(Sexe)             0.122727    1.0   0.139591  7.089351e-01
+C(Group):C(Sexe)    0.990909    4.0   0.281768  8.897085e-01
+Residual          281.340909  320.0        NaN           NaN
+
+Tukey's HSD test results:
+Multiple Comparison of Means - Tukey HSD, FWER=0.05 
+====================================================
+group1 group2 meandiff p-adj   lower   upper  reject
+----------------------------------------------------
+   CAD    DID   0.5152 0.0141    0.07  0.9603   True
+   CAD    PER   0.0455 0.9986 -0.3997  0.4906  False
+   CAD    REL   0.5152 0.0141    0.07  0.9603   True
+   CAD    STA  -0.6818 0.0003  -1.127 -0.2366   True
+   DID    PER  -0.4697 0.0329 -0.9149 -0.0245   True
+   DID    REL      0.0    1.0 -0.4452  0.4452  False
+   DID    STA   -1.197    0.0 -1.6421 -0.7518   True
+   PER    REL   0.4697 0.0329  0.0245  0.9149   True
+   PER    STA  -0.7273 0.0001 -1.1724 -0.2821   True
+   REL    STA   -1.197    0.0 -1.6421 -0.7518   True
+----------------------------------------------------
+

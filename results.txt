@@ -1,29 +1,26 @@
-One-way ANOVA results:
-              sum_sq     df         F        PR(>F)
-C(Group)   63.800000    4.0  18.35251  1.311966e-13
-Residual  282.454545  325.0       NaN           NaN
+ANOVA Results:
+               sum_sq      df          F        PR(>F)
+Group      575.546376     4.0  102.50699  5.768544e-83
+Residual  5277.821486  3760.0        NaN           NaN
 
-Two-way ANOVA results:
-                      sum_sq     df          F        PR(>F)
-C(Group)           63.800000    4.0  18.141692  1.919627e-13
-C(Sexe)             0.122727    1.0   0.139591  7.089351e-01
-C(Group):C(Sexe)    0.990909    4.0   0.281768  8.897085e-01
-Residual          281.340909  320.0        NaN           NaN
-
-Tukey's HSD test results:
+Tukey's HSD Results:
 Multiple Comparison of Means - Tukey HSD, FWER=0.05 
 ====================================================
 group1 group2 meandiff p-adj   lower   upper  reject
 ----------------------------------------------------
-   CAD    DID   0.5152 0.0141    0.07  0.9603   True
-   CAD    PER   0.0455 0.9986 -0.3997  0.4906  False
-   CAD    REL   0.5152 0.0141    0.07  0.9603   True
-   CAD    STA  -0.6818 0.0003  -1.127 -0.2366   True
-   DID    PER  -0.4697 0.0329 -0.9149 -0.0245   True
-   DID    REL      0.0    1.0 -0.4452  0.4452  False
-   DID    STA   -1.197    0.0 -1.6421 -0.7518   True
-   PER    REL   0.4697 0.0329  0.0245  0.9149   True
-   PER    STA  -0.7273 0.0001 -1.1724 -0.2821   True
-   REL    STA   -1.197    0.0 -1.6421 -0.7518   True
-----------------------------------------------------
-
+   CAD    DID    0.542    0.0  0.3814  0.7026   True
+   CAD    PER   0.0867 0.6042  -0.078  0.2513  False
+   CAD    REL   0.6067    0.0  0.4419  0.7715   True
+   CAD    STA   -0.518    0.0 -0.6942 -0.3418   True
+   DID    PER  -0.4553    0.0 -0.6159 -0.2948   True
+   DID    REL   0.0647 0.8073  -0.096  0.2254  False
+   DID    STA    -1.06    0.0 -1.2323 -0.8877   True
+   PER    REL     0.52    0.0  0.3553  0.6848   True
+   PER    STA  -0.6047    0.0 -0.7807 -0.4286   True
+   REL    STA  -1.1247    0.0 -1.3009 -0.9485   True
+----------------------------------------------------ANOVA Results:
+                          sum_sq      df         F         PR(>F)
+C(Sex)                 29.238870     1.0  22.78903   1.887989e-06
+C(Dimension)          947.272705    43.0  17.17006  2.546607e-113
+C(Sex):C(Dimension)    31.325528    43.0   0.56780   9.896579e-01
+Residual             4158.280490  3241.0       NaN            NaN

@@ -1,0 +1,51 @@
+###### Kruskal–Wallis ######
+
+=== Kruskal–Wallis global ===
+Kruskal–Wallis statistic = 331.098, p-value = 2.110872077e-70
+
+Dunn’s Test (post-hoc) because Kruskal–Wallis is significant:
+              CAD           DID           PER           REL           STA
+CAD  1.000000e+00  6.754255e-17  1.000000e+00  2.835068e-15  2.298967e-12
+DID  6.754255e-17  1.000000e+00  2.800399e-16  1.000000e+00  2.327456e-53
+PER  1.000000e+00  2.800399e-16  1.000000e+00  1.062290e-14  6.814753e-13
+REL  2.835068e-15  1.000000e+00  1.062290e-14  1.000000e+00  1.071642e-49
+STA  2.298967e-12  2.327456e-53  6.814753e-13  1.071642e-49  1.000000e+00
+
+
+=== Kruskal–Wallis for subgroup '9' ===
+Kruskal–Wallis statistic = 75.3901, p-value = 1.6478e-15
+
+--- Dunn’s Test (post-hoc) ---
+          CAD           DID       PER           REL           STA
+CAD  1.000000  1.724126e-03  1.000000  9.994851e-04  1.708465e-02
+DID  0.001724  1.000000e+00  0.000002  1.000000e+00  1.879511e-10
+PER  1.000000  1.826229e-06  1.000000  1.065003e-06  6.964078e-01
+REL  0.000999  1.000000e+00  0.000001  1.000000e+00  1.170020e-10
+STA  0.017085  1.879511e-10  0.696408  1.170020e-10  1.000000e+00
+
+=== Kruskal–Wallis for subgroup '10' ===
+Kruskal–Wallis statistic = 207.7123, p-value = 8.2498e-44
+
+--- Dunn’s Test (post-hoc) ---
+              CAD           DID           PER           REL           STA
+CAD  1.000000e+00  9.142613e-10  1.000000e+00  1.178488e-06  2.866664e-10
+DID  9.142613e-10  1.000000e+00  3.436167e-11  1.000000e+00  8.362633e-37
+PER  1.000000e+00  3.436167e-11  1.000000e+00  8.345662e-08  4.766111e-09
+REL  1.178488e-06  1.000000e+00  8.345662e-08  1.000000e+00  3.742780e-30
+STA  2.866664e-10  8.362633e-37  4.766111e-09  3.742780e-30  1.000000e+00
+
+=== Kruskal–Wallis for subgroup '11' ===
+Kruskal–Wallis statistic = 59.2351, p-value = 4.1999e-12
+
+--- Dunn’s Test (post-hoc) ---
+          CAD           DID       PER           REL           STA
+CAD  1.000000  1.510065e-03  0.786276  3.205751e-05  1.873371e-01
+DID  0.001510  1.000000e+00  0.464089  1.000000e+00  3.474287e-08
+PER  0.786276  4.640888e-01  1.000000  3.704932e-02  6.730810e-04
+REL  0.000032  1.000000e+00  0.037049  1.000000e+00  2.442149e-10
+STA  0.187337  3.474287e-08  0.000673  2.442149e-10  1.000000e+00
+
+
+=== Kruskal–Wallis (comparing the 3 subClasses againt each other) ===
+Kruskal–Wallis statistic = 0.265, p-value = 0.8758.
+No significant difference found among '9','10','11' by Kruskal–Wallis.

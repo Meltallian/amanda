@@ -654,47 +654,358 @@ def melt_with_both_factors(data):
 # Create the combined melted DataFrame
 full_melted = melt_with_both_factors(final_filtered_data)
 
-# For each combination of Sex and ClassGroup, run a Kruskal-Wallis test on dimensions
-for sex_val in final_filtered_data['Sex'].unique():
-    for class_val in final_filtered_data['ClassGroup'].unique():
-        subgroup_data = full_melted[
-            (full_melted['Sex'] == sex_val) & 
-            (full_melted['ClassGroup'] == class_val)
-        ]
-        
-        # Skip if we have fewer than 5 observations in this group
-        if len(subgroup_data) < 5:
-            print(f"\nSkipping analysis for Sex={sex_val}, Class={class_val}: insufficient data")
-            continue
-            
-        print(f"\n=== Analysis for Sex={sex_val}, Class={class_val} ===")
-        
-        # Group data by dimension and run Kruskal-Wallis
-        dim_groups = []
-        for dim in dimensions:
-            dim_values = subgroup_data[subgroup_data['Dimension'] == dim]['Value'].values
-            if len(dim_values) > 0:
-                dim_groups.append(dim_values)
-        
-        if len(dim_groups) > 1:  # Need at least 2 groups for comparison
-            kw_stat, kw_pvalue = kruskal(*dim_groups)
-            print(f"Kruskal-Wallis: H={kw_stat:.4f}, p={kw_pvalue:.4e}")
-            
-            if kw_pvalue < 0.05:
-                print("Significant difference found between dimensions.")
-                # Dunn's post-hoc test
-                dunn_result = sp.posthoc_dunn(
-                    subgroup_data,
-                    val_col='Value',
-                    group_col='Dimension',
-                    p_adjust='bonferroni'
-                )
-                print("Dunn's post-hoc test p-values:")
-                print(dunn_result)
-        else:
-            print("Insufficient data for Kruskal-Wallis test.")
-
 # Generate a summary table of means for all combinations
 print("\n=== Summary Table: Mean Values by Dimension, Sex, and Class ===")
 summary_table = full_melted.groupby(['Sex', 'ClassGroup', 'Dimension'])['Value'].agg(['mean', 'count']).reset_index()
 print(summary_table)
+
+# Test for class group effects within each dimension
+print("\n===============================================")
+print("ANALYZING CLASS GROUP DIFFERENCES WITHIN EACH DIMENSION")
+print("===============================================")
+
+# First, ensure we have data for the different class groups
+class_counts = final_filtered_data['ClassGroup'].value_counts()
+print("Sample sizes by class group:")
+print(class_counts)
+
+print("\n=== Testing Class Group Effect Within Each Dimension ===")
+
+for dim in dimensions:
+    print(f"\nDimension: {dim}")
+    
+    # Filter the full melted data for just this dimension
+    dim_data = full_melted[full_melted['Dimension'] == dim]
+    
+    # Split by class group
+    class_9_values = dim_data[dim_data['ClassGroup'] == '9']['Value'].values
+    class_10_values = dim_data[dim_data['ClassGroup'] == '10']['Value'].values
+    class_11_values = dim_data[dim_data['ClassGroup'] == '11']['Value'].values
+    
+    # Check if we have sufficient data in each group
+    if len(class_9_values) > 0 and len(class_10_values) > 0 and len(class_11_values) > 0:
+        # Use Kruskal-Wallis test (non-parametric ANOVA)
+        kw_stat, kw_pvalue = kruskal(class_9_values, class_10_values, class_11_values)
+        
+        print(f"Kruskal-Wallis test: H = {kw_stat:.4f}, p-value = {kw_pvalue:.4e}")
+        
+        if kw_pvalue < 0.05:
+            print(f"Significant difference between class groups for {dim} (p < 0.05)")
+            
+            # Create a DataFrame for Dunn's post-hoc test
+            class_df = pd.DataFrame({
+                'Value': np.concatenate([class_9_values, class_10_values, class_11_values]),
+                'ClassGroup': ['9'] * len(class_9_values) + ['10'] * len(class_10_values) + ['11'] * len(class_11_values)
+            })
+            
+            # Run Dunn's post-hoc test
+            print("\nDunn's post-hoc test:")
+            dunn_result = sp.posthoc_dunn(
+                class_df,
+                val_col='Value',
+                group_col='ClassGroup',
+                p_adjust='bonferroni'
+            )
+            print(dunn_result)
+            
+            # Add class means for context
+            class_9_mean = dim_data[dim_data['ClassGroup'] == '9']['Value'].mean()
+            class_10_mean = dim_data[dim_data['ClassGroup'] == '10']['Value'].mean()
+            class_11_mean = dim_data[dim_data['ClassGroup'] == '11']['Value'].mean()
+            print(f"Class 9 mean: {class_9_mean:.3f}, Class 10 mean: {class_10_mean:.3f}, Class 11 mean: {class_11_mean:.3f}")
+        else:
+            print(f"No significant difference between class groups for {dim}")
+    else:
+        print(f"Insufficient data for some class groups in {dim} dimension.")
+
+# Create a visualization to compare dimensions across class groups
+print("\n=== Creating Bar Chart of Dimensions by Class Groups ===")
+
+# Calculate means for each dimension by class group
+dim_class_means = full_melted.groupby(['Dimension', 'ClassGroup'])['Value'].mean().unstack()
+print("Mean values by dimension and class group:")
+print(dim_class_means)
+
+# Plot this as a grouped bar chart
+plt.figure(figsize=(12, 8))
+dim_class_means.plot(kind='bar', figsize=(12, 8))
+plt.title('Mean Dimension Scores by Class Group', fontsize=18, fontweight='bold')
+plt.xlabel('Dimension', fontsize=14)
+plt.ylabel('Mean Score', fontsize=14)
+plt.xticks(rotation=0, fontsize=12)
+plt.yticks(fontsize=12)
+plt.legend(title='Class Group', fontsize=12)
+plt.grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
+plt.tight_layout()
+plt.savefig('dimension_by_class_comparison.png', dpi=300, bbox_inches='tight')
+
+# Create a radar chart comparing class groups (9, 10, 11)
+print("\n=== Creating Class Group Comparison Radar Chart ===")
+
+# First, create dictionaries of aggregate means by class group
+aggregate_means_9 = {
+    dim: final_filtered_data[final_filtered_data['ClassGroup'] == '9'][
+        [col for col in final_filtered_data.columns if col.endswith(dim)]
+    ].mean().mean()
+    for dim in dimensions
+}
+
+aggregate_means_10 = {
+    dim: final_filtered_data[final_filtered_data['ClassGroup'] == '10'][
+        [col for col in final_filtered_data.columns if col.endswith(dim)]
+    ].mean().mean()
+    for dim in dimensions
+}
+
+aggregate_means_11 = {
+    dim: final_filtered_data[final_filtered_data['ClassGroup'] == '11'][
+        [col for col in final_filtered_data.columns if col.endswith(dim)]
+    ].mean().mean()
+    for dim in dimensions
+}
+
+# Convert the dictionaries to DataFrames for plotting
+class_9_df = pd.DataFrame(list(aggregate_means_9.items()), columns=['Dimension', 'Class_9_Mean'])
+class_10_df = pd.DataFrame(list(aggregate_means_10.items()), columns=['Dimension', 'Class_10_Mean'])
+class_11_df = pd.DataFrame(list(aggregate_means_11.items()), columns=['Dimension', 'Class_11_Mean'])
+
+# Merge the DataFrames
+radar_df_class = class_9_df.merge(class_10_df, on='Dimension').merge(class_11_df, on='Dimension')
+
+# Add angles for radar chart
+radar_df_class['Angle'] = np.linspace(0, 2 * pi, len(radar_df_class), endpoint=False)
+
+# Append the start value to close the radar chart
+radar_df_class = pd.concat([radar_df_class, radar_df_class.iloc[[0]]]).reset_index(drop=True)
+
+# Create the radar chart for class group comparison
+fig, ax = plt.subplots(subplot_kw=dict(polar=True), figsize=(10, 8))
+
+# Plot Class 9 line
+ax.plot(radar_df_class['Angle'], radar_df_class['Class_9_Mean'], 'o-', linewidth=2, color='blue', label='Class 9')
+ax.fill(radar_df_class['Angle'], radar_df_class['Class_9_Mean'], color='blue', alpha=0.1)
+
+# Plot Class 10 line
+ax.plot(radar_df_class['Angle'], radar_df_class['Class_10_Mean'], 'o-', linewidth=2, color='red', label='Class 10')
+ax.fill(radar_df_class['Angle'], radar_df_class['Class_10_Mean'], color='red', alpha=0.1)
+
+# Plot Class 11 line
+ax.plot(radar_df_class['Angle'], radar_df_class['Class_11_Mean'], 'o-', linewidth=2, color='green', label='Class 11')
+ax.fill(radar_df_class['Angle'], radar_df_class['Class_11_Mean'], color='green', alpha=0.1)
+
+# Set the dimension names as labels
+ax.set_xticks(radar_df_class['Angle'][:-1])
+ax.set_xticklabels(radar_df_class['Dimension'][:-1], fontsize=12)
+
+# Annotate values
+for i in range(len(radar_df_class) - 1):  # Skip the last duplicate point
+    # Class 9 values
+    ax.annotate(
+        f"{radar_df_class['Class_9_Mean'][i]:.2f}",
+        (radar_df_class['Angle'][i], radar_df_class['Class_9_Mean'][i]), 
+        textcoords="offset points", 
+        xytext=(0, 10), 
+        ha='center',
+        color='blue'
+    )
+    
+    # Class 10 values - position these slightly offset
+    ax.annotate(
+        f"{radar_df_class['Class_10_Mean'][i]:.2f}",
+        (radar_df_class['Angle'][i], radar_df_class['Class_10_Mean'][i]), 
+        textcoords="offset points", 
+        xytext=(15, 0), 
+        ha='left',
+        color='red'
+    )
+    
+    # Class 11 values - position these slightly offset in another direction
+    ax.annotate(
+        f"{radar_df_class['Class_11_Mean'][i]:.2f}",
+        (radar_df_class['Angle'][i], radar_df_class['Class_11_Mean'][i]), 
+        textcoords="offset points", 
+        xytext=(-15, 0), 
+        ha='right',
+        color='green'
+    )
+
+plt.title('Comparison of Dimensions by Age Group', fontsize=18, fontweight='bold')
+plt.legend(loc='upper right', bbox_to_anchor=(0.1, 0.1))
+plt.savefig('radar_chart_class_comparison.png', dpi=300, bbox_inches='tight')
+
+# Add a summary table of dimension means by class group
+print("\n=== Summary of Dimension Means by Age Group ===")
+class_means_df = pd.DataFrame({
+    'Class 9': pd.Series(aggregate_means_9),
+    'Class 10': pd.Series(aggregate_means_10),
+    'Class 11': pd.Series(aggregate_means_11)
+})
+print(class_means_df)
+
+
+# Test for education track effects (VG vs VP) within each dimension
+print("\n===============================================")
+print("ANALYZING VG/VP TRACK DIFFERENCES WITHIN EACH DIMENSION")
+print("===============================================")
+
+# First, create a function to identify the education track (G or P)
+def identify_track(classe_str):
+    """
+    Identifies whether a student is in the G track or P track based on the Classe field.
+    Returns 'G' if 'G' is in the string, 'P' if 'P' is in the string, and None otherwise.
+    """
+    if not isinstance(classe_str, str):
+        return None
+        
+    if 'G' in classe_str:
+        return 'G'
+    elif 'P' in classe_str:
+        return 'P'
+    else:
+        return None
+
+# Add education track column to final_filtered_data
+final_filtered_data['Track'] = data['Classe'].apply(identify_track)
+
+# Count samples in each track
+track_counts = final_filtered_data['Track'].value_counts()
+print("Sample sizes by education track:")
+print(track_counts)
+
+# Create melted data for dimension-by-track analysis
+def melt_by_track(data):
+    """
+    Creates a melted DataFrame with Track and Dimension information.
+    Returns: DataFrame with columns ['Value', 'Dimension', 'Track']
+    """
+    melted_parts = []
+    
+    for dim in dimensions:
+        dim_cols = [col for col in data.columns if col.endswith(dim)]
+        subset = data[dim_cols + ['Track']].copy()
+        
+        # Only use rows with valid track information
+        subset = subset[subset['Track'].notna()]
+        
+        melted = subset.melt(id_vars=['Track'], 
+                           var_name='OriginalColumn', 
+                           value_name='Value')
+        melted['Dimension'] = dim
+        melted_parts.append(melted[['Value', 'Dimension', 'Track']])
+    
+    melted_df = pd.concat(melted_parts, axis=0, ignore_index=True)
+    melted_df.dropna(subset=['Value'], inplace=True)
+    
+    return melted_df
+
+# Create the melted DataFrame with track information
+track_melted = melt_by_track(final_filtered_data)
+
+print("\n=== Testing Track Effect Within Each Dimension ===")
+
+for dim in dimensions:
+    print(f"\nDimension: {dim}")
+    
+    # Filter for this dimension
+    dim_data = track_melted[track_melted['Dimension'] == dim]
+    
+    # Split by track
+    g_track_values = dim_data[dim_data['Track'] == 'G']['Value'].values
+    p_track_values = dim_data[dim_data['Track'] == 'P']['Value'].values
+    
+    # Check if we have sufficient data
+    if len(g_track_values) > 0 and len(p_track_values) > 0:
+        # Use Mann-Whitney U test (non-parametric alternative to t-test)
+        u_stat, p_value = stats.mannwhitneyu(g_track_values, p_track_values, alternative='two-sided')
+        
+        print(f"Mann-Whitney U test: U = {u_stat:.4f}, p-value = {p_value:.4e}")
+        
+        if p_value < 0.05:
+            print(f"Significant difference between tracks for {dim} (p < 0.05)")
+            # Add track means for context
+            g_mean = dim_data[dim_data['Track'] == 'G']['Value'].mean()
+            p_mean = dim_data[dim_data['Track'] == 'P']['Value'].mean()
+            print(f"G track mean: {g_mean:.3f}, P track mean: {p_mean:.3f}")
+        else:
+            print(f"No significant difference between tracks for {dim}")
+    else:
+        print(f"Insufficient data for comparison in {dim}")
+
+# Create dictionary of aggregate means by track
+aggregate_means_g = {
+    dim: final_filtered_data[final_filtered_data['Track'] == 'G'][
+        [col for col in final_filtered_data.columns if col.endswith(dim)]
+    ].mean().mean()
+    for dim in dimensions
+}
+
+aggregate_means_p = {
+    dim: final_filtered_data[final_filtered_data['Track'] == 'P'][
+        [col for col in final_filtered_data.columns if col.endswith(dim)]
+    ].mean().mean()
+    for dim in dimensions
+}
+
+# Create a visualization to compare the tracks
+print("\n=== Creating Track Comparison Radar Chart ===")
+
+# Convert the dictionaries to DataFrames for plotting
+g_df = pd.DataFrame(list(aggregate_means_g.items()), columns=['Dimension', 'G_Track_Mean'])
+p_df = pd.DataFrame(list(aggregate_means_p.items()), columns=['Dimension', 'P_Track_Mean'])
+
+# Merge the two DataFrames
+radar_df_track = pd.merge(g_df, p_df, on='Dimension')
+
+# Add angles for radar chart
+radar_df_track['Angle'] = np.linspace(0, 2 * pi, len(radar_df_track), endpoint=False)
+
+# Append the start value to close the radar chart
+radar_df_track = pd.concat([radar_df_track, radar_df_track.iloc[[0]]]).reset_index(drop=True)
+
+# Create the radar chart for track comparison
+fig, ax = plt.subplots(subplot_kw=dict(polar=True), figsize=(10, 8))
+
+# Plot G track line
+ax.plot(radar_df_track['Angle'], radar_df_track['G_Track_Mean'], 'o-', linewidth=2, color='green', label='VG')
+ax.fill(radar_df_track['Angle'], radar_df_track['G_Track_Mean'], color='green', alpha=0.1)
+
+# Plot P track line
+ax.plot(radar_df_track['Angle'], radar_df_track['P_Track_Mean'], 'o-', linewidth=2, color='purple', label='VP')
+ax.fill(radar_df_track['Angle'], radar_df_track['P_Track_Mean'], color='purple', alpha=0.1)
+
+# Set the dimension names as labels
+ax.set_xticks(radar_df_track['Angle'][:-1])
+ax.set_xticklabels(radar_df_track['Dimension'][:-1], fontsize=12)
+
+# Annotate values
+for i in range(len(radar_df_track) - 1):
+    # G track values
+    ax.annotate(
+        f"{radar_df_track['G_Track_Mean'][i]:.2f}",
+        (radar_df_track['Angle'][i], radar_df_track['G_Track_Mean'][i]), 
+        textcoords="offset points", 
+        xytext=(0, 10), 
+        ha='center',
+        color='green'
+    )
+    # P track values
+    ax.annotate(
+        f"{radar_df_track['P_Track_Mean'][i]:.2f}",
+        (radar_df_track['Angle'][i], radar_df_track['P_Track_Mean'][i]), 
+        textcoords="offset points", 
+        xytext=(0, -15), 
+        ha='center',
+        color='purple'
+    )
+
+plt.title('Comparison of Dimensions by Education Track (VG vs VP)', fontsize=18, fontweight='bold')
+plt.legend(loc='upper right', bbox_to_anchor=(0.1, 0.1))
+plt.savefig('radar_chart_track_comparison.png', dpi=300, bbox_inches='tight')
+
+# Add a summary table of dimension means by track
+print("\n=== Summary of Dimension Means by Education Track ===")
+track_means_df = pd.DataFrame({
+    'G Track': pd.Series(aggregate_means_g),
+    'P Track': pd.Series(aggregate_means_p)
+})
+print(track_means_df)

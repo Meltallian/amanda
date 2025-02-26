@@ -1,16 +1,26 @@
-###### Kruskal–Wallis ######
-
-=== Kruskal–Wallis global ===
-Kruskal–Wallis statistic = 331.098, p-value = 2.110872077e-70
+Kruskal–Wallis statistic = 320.223, p-value = 4.695071695e-68
 
 Dunn’s Test (post-hoc) because Kruskal–Wallis is significant:
               CAD           DID           PER           REL           STA
-CAD  1.000000e+00  6.754255e-17  1.000000e+00  2.835068e-15  2.298967e-12
-DID  6.754255e-17  1.000000e+00  2.800399e-16  1.000000e+00  2.327456e-53
-PER  1.000000e+00  2.800399e-16  1.000000e+00  1.062290e-14  6.814753e-13
-REL  2.835068e-15  1.000000e+00  1.062290e-14  1.000000e+00  1.071642e-49
-STA  2.298967e-12  2.327456e-53  6.814753e-13  1.071642e-49  1.000000e+00
+CAD  1.000000e+00  1.616611e-16  1.000000e+00  9.724991e-15  7.659510e-12
+DID  1.616611e-16  1.000000e+00  3.453064e-16  1.000000e+00  1.304199e-51
+PER  1.000000e+00  3.453064e-16  1.000000e+00  1.963561e-14  3.899609e-12
+REL  9.724991e-15  1.000000e+00  1.963561e-14  1.000000e+00  9.784660e-48
+STA  7.659510e-12  1.304199e-51  3.899609e-12  9.784660e-48  1.000000e+00
 
+Counts by ClassGroup:
+ClassGroup
+10    35
+9     19
+11    13
+Name: count, dtype: int64
+Means of each dimension for each ClassGroup (9, 10, 11):
+           10        11         9
+STA  1.959184  2.127289  2.134085
+PER  2.590476  2.769231  2.393437
+CAD  2.624370  2.512821  2.578298
+REL  3.182633  3.191595  3.053606
+DID  3.179832  3.041667  3.025077
 
 === Kruskal–Wallis for subgroup '9' ===
 Kruskal–Wallis statistic = 75.3901, p-value = 1.6478e-15
@@ -44,11 +54,58 @@ DID  0.001510  1.000000e+00  0.464089  1.000000e+00  3.474287e-08
 PER  0.786276  4.640888e-01  1.000000  3.704932e-02  6.730810e-04
 REL  0.000032  1.000000e+00  0.037049  1.000000e+00  2.442149e-10
 STA  0.187337  3.474287e-08  0.000673  2.442149e-10  1.000000e+00
-
-
-=== Kruskal–Wallis (comparing the 3 subClasses againt each other) ===
-Kruskal–Wallis statistic = 0.265, p-value = 0.8758.
+Kruskal–Wallis (comparing the 3 subClasses againt each other) = 0.265, p-value = 0.8758.
 No significant difference found among '9','10','11' by Kruskal–Wallis.
+
+
+===============================================
+ANALYZING CLASS GROUP DIFFERENCES WITHIN EACH DIMENSION
+===============================================
+Sample sizes by class group:
+ClassGroup
+10    35
+9     19
+11    13
+Name: count, dtype: int64
+
+=== Testing Class Group Effect Within Each Dimension ===
+
+Dimension: STA
+Kruskal-Wallis test: H = 2.3524, p-value = 3.0845e-01
+No significant difference between class groups for STA
+
+Dimension: PER
+Kruskal-Wallis test: H = 8.0389, p-value = 1.7963e-02
+Significant difference between class groups for PER (p < 0.05)
+
+Dunn's post-hoc test:
+          10        11         9
+10  1.000000  0.383876  0.212450
+11  0.383876  1.000000  0.015175
+9   0.212450  0.015175  1.000000
+Class 9 mean: 2.394, Class 10 mean: 2.590, Class 11 mean: 2.769
+
+Dimension: CAD
+Kruskal-Wallis test: H = 0.9065, p-value = 6.3558e-01
+No significant difference between class groups for CAD
+
+Dimension: REL
+Kruskal-Wallis test: H = 0.7292, p-value = 6.9449e-01
+No significant difference between class groups for REL
+
+Dimension: DID
+Kruskal-Wallis test: H = 2.8135, p-value = 2.4494e-01
+No significant difference between class groups for DID
+
+=== Creating Bar Chart of Dimensions by Class Groups ===
+Mean values by dimension and class group:
+ClassGroup        10        11         9
+Dimension                               
+CAD         2.624204  2.512821  2.579882
+DID         3.180516  3.046875  3.026596
+PER         2.590476  2.769231  2.394118
+REL         3.182109  3.189655  3.052941
+STA         1.959184  2.123596  2.136364
 
 
 ===============================================
@@ -62,11 +119,11 @@ Name: count, dtype: int64
 
 Aggregate dimension means by sex:
          Male    Female
-STA  1.923345  2.148299
-PER  2.493225  2.608466
-CAD  2.506165  2.665608
-REL  3.051220  3.296296
-DID  3.037603  3.253571
+STA  1.921429  2.148299
+PER  2.469444  2.608466
+CAD  2.491026  2.665608
+REL  3.029986  3.296296
+DID  3.020877  3.253571
 
 === Kruskal-Wallis Test for Males ===
 
@@ -122,79 +179,6 @@ Male mean: 3.023, Female mean: 3.254
 
 === Testing Interaction Between Sex, Class Groups, and Dimensions ===
 
-=== Analysis for Sex=M, Class=9 ===
-Kruskal-Wallis: H=22.6090, p=1.5156e-04
-Significant difference found between dimensions.
-Dunn's post-hoc test p-values:
-          CAD       DID       PER       REL       STA
-CAD  1.000000  0.342763  1.000000  0.347351  0.574556
-DID  0.342763  1.000000  0.130674  1.000000  0.000872
-PER  1.000000  0.130674  1.000000  0.136254  1.000000
-REL  0.347351  1.000000  0.136254  1.000000  0.001040
-STA  0.574556  0.000872  1.000000  0.001040  1.000000
-
-=== Analysis for Sex=M, Class=10 ===
-Kruskal-Wallis: H=150.8696, p=1.3255e-31
-Significant difference found between dimensions.
-Dunn's post-hoc test p-values:
-              CAD           DID           PER           REL           STA
-CAD  1.000000e+00  5.453271e-07  1.000000e+00  4.143866e-04  4.257067e-08
-DID  5.453271e-07  1.000000e+00  5.276048e-09  1.000000e+00  1.528025e-27
-PER  1.000000e+00  5.276048e-09  1.000000e+00  1.222992e-05  2.238641e-06
-REL  4.143866e-04  1.000000e+00  1.222992e-05  1.000000e+00  2.787649e-21
-STA  4.257067e-08  1.528025e-27  2.238641e-06  2.787649e-21  1.000000e+00
-
-=== Analysis for Sex=M, Class=11 ===
-Kruskal-Wallis: H=38.3284, p=9.5867e-08
-Significant difference found between dimensions.
-Dunn's post-hoc test p-values:
-          CAD       DID       PER       REL       STA
-CAD  1.000000  0.004816  1.000000  0.004546  0.780590
-DID  0.004816  1.000000  0.454204  1.000000  0.000005
-PER  1.000000  0.454204  1.000000  0.405707  0.017250
-REL  0.004546  1.000000  0.405707  1.000000  0.000005
-STA  0.780590  0.000005  0.017250  0.000005  1.000000
-
-=== Analysis for Sex=F, Class=9 ===
-Kruskal-Wallis: H=64.8296, p=2.7949e-13
-Significant difference found between dimensions.
-Dunn's post-hoc test p-values:
-          CAD           DID           PER           REL           STA
-CAD  1.000000  1.029249e-02  5.951738e-01  3.681878e-03  6.713185e-02
-DID  0.010292  1.000000e+00  1.706251e-06  1.000000e+00  5.565510e-08
-PER  0.595174  1.706251e-06  1.000000e+00  4.618897e-07  1.000000e+00
-REL  0.003682  1.000000e+00  4.618897e-07  1.000000e+00  1.488617e-08
-STA  0.067132  5.565510e-08  1.000000e+00  1.488617e-08  1.000000e+00
-
-
-=== Analysis for Sex=F, Class=10 ===
-Kruskal-Wallis: H=52.2849, p=1.2026e-10
-Significant difference found between dimensions.
-Dunn's post-hoc test p-values:
-          CAD           DID       PER           REL           STA
-CAD  1.000000  3.221264e-03  1.000000  3.073124e-03  8.804320e-02
-DID  0.003221  1.000000e+00  0.017862  1.000000e+00  1.616201e-08
-PER  1.000000  1.786168e-02  1.000000  1.644629e-02  2.281126e-02
-REL  0.003073  1.000000e+00  0.016446  1.000000e+00  2.028306e-08
-STA  0.088043  1.616201e-08  0.022811  2.028306e-08  1.000000e+00
-
-=== Analysis for Sex=F, Class=11 ===
-Kruskal-Wallis: H=13.1102, p=1.0750e-02
-Significant difference found between dimensions.
-Dunn's post-hoc test p-values:
-          CAD       DID       PER       REL       STA
-CAD  1.000000  0.407138  1.000000  0.191471  1.000000
-DID  0.407138  1.000000  1.000000  1.000000  0.066102
-PER  1.000000  1.000000  1.000000  1.000000  0.693586
-REL  0.191471  1.000000  1.000000  1.000000  0.028698
-STA  1.000000  0.066102  0.693586  0.028698  1.000000
-
-Skipping analysis for Sex=nan, Class=10: insufficient data
-
-Skipping analysis for Sex=nan, Class=11: insufficient data
-
-Skipping analysis for Sex=nan, Class=9: insufficient data
-
 === Summary Table: Mean Values by Dimension, Sex, and Class ===
    Sex ClassGroup Dimension      mean  count
 0    F         10       CAD  2.703704     81
@@ -227,3 +211,45 @@ Skipping analysis for Sex=nan, Class=9: insufficient data
 27   M          9       PER  2.377778     90
 28   M          9       REL  2.797753     89
 29   M          9       STA  2.085714     70
+
+===============================================
+ANALYZING VG/VP TRACK DIFFERENCES WITHIN EACH DIMENSION
+===============================================
+Sample sizes by education track:
+Track
+G    48
+P    19
+Name: count, dtype: int64
+
+=== Testing Track Effect Within Each Dimension ===
+
+Dimension: STA
+Mann-Whitney U test: U = 24674.0000, p-value = 4.2420e-02
+Significant difference between tracks for STA (p < 0.05)
+G track mean: 2.105, P track mean: 1.880
+
+Dimension: PER
+Mann-Whitney U test: U = 37339.0000, p-value = 7.3892e-01
+No significant difference between tracks for PER
+
+Dimension: CAD
+Mann-Whitney U test: U = 33865.0000, p-value = 1.4702e-01
+No significant difference between tracks for CAD
+
+Dimension: REL
+Mann-Whitney U test: U = 37927.5000, p-value = 3.7171e-01
+No significant difference between tracks for REL
+
+Dimension: DID
+Mann-Whitney U test: U = 46277.0000, p-value = 5.8121e-01
+No significant difference between tracks for DID
+
+=== Creating Track Comparison Radar Chart ===
+
+=== Summary of Dimension Means by Education Track ===
+      G Track   P Track
+STA  2.105876  1.879699
+PER  2.576389  2.553606
+CAD  2.548217  2.692982
+REL  3.184939  3.050682
+DID  3.118216  3.089474

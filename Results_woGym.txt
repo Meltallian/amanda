@@ -49,3 +49,181 @@ STA  0.187337  3.474287e-08  0.000673  2.442149e-10  1.000000e+00
 === Kruskal–Wallis (comparing the 3 subClasses againt each other) ===
 Kruskal–Wallis statistic = 0.265, p-value = 0.8758.
 No significant difference found among '9','10','11' by Kruskal–Wallis.
+
+
+===============================================
+ANALYZING SEX DIFFERENCES ACROSS DIMENSIONS
+===============================================
+Sample sizes by sex:
+Sex
+M    40
+F    21
+Name: count, dtype: int64
+
+Aggregate dimension means by sex:
+         Male    Female
+STA  1.923345  2.148299
+PER  2.493225  2.608466
+CAD  2.506165  2.665608
+REL  3.051220  3.296296
+DID  3.037603  3.253571
+
+=== Kruskal-Wallis Test for Males ===
+
+=== Kruskal–Wallis for subgroup 'Male' ===
+Kruskal–Wallis statistic = 199.2805, p-value = 5.3649e-42
+
+--- Dunn’s Test (post-hoc) ---
+              CAD           DID           PER           REL           STA
+CAD  1.000000e+00  5.329745e-10  1.000000e+00  4.571830e-07  4.833479e-09
+DID  5.329745e-10  1.000000e+00  6.189651e-11  1.000000e+00  8.660750e-35
+PER  1.000000e+00  6.189651e-11  1.000000e+00  7.872318e-08  2.616533e-08
+REL  4.571830e-07  1.000000e+00  7.872318e-08  1.000000e+00  8.338346e-29
+STA  4.833479e-09  8.660750e-35  2.616533e-08  8.338346e-29  1.000000e+00
+
+=== Kruskal-Wallis Test for Females ===
+
+=== Kruskal–Wallis for subgroup 'Female' ===
+Kruskal–Wallis statistic = 121.7364, p-value = 2.2738e-25
+
+--- Dunn’s Test (post-hoc) ---
+              CAD           DID           PER           REL           STA
+CAD  1.000000e+00  1.124782e-06  1.000000e+00  2.534134e-07  1.790700e-03
+DID  1.124782e-06  1.000000e+00  1.202288e-07  1.000000e+00  1.692782e-17
+PER  1.000000e+00  1.202288e-07  1.000000e+00  2.590722e-08  6.765276e-03
+REL  2.534134e-07  1.000000e+00  2.590722e-08  1.000000e+00  3.270435e-18
+STA  1.790700e-03  1.692782e-17  6.765276e-03  3.270435e-18  1.000000e+00
+
+=== Testing Sex Effect Within Each Dimension ===
+
+Dimension: STA
+Mann-Whitney U test: U = 18244.5000, p-value = 5.4422e-02
+No significant difference between sexes for STA
+
+Dimension: PER
+Mann-Whitney U test: U = 31529.5000, p-value = 1.4465e-01
+No significant difference between sexes for PER
+
+Dimension: CAD
+Mann-Whitney U test: U = 30731.0000, p-value = 8.4965e-02
+No significant difference between sexes for CAD
+
+Dimension: REL
+Mann-Whitney U test: U = 26683.0000, p-value = 2.2662e-05
+Significant difference between sexes for REL (p < 0.05)
+Male mean: 3.031, Female mean: 3.296
+
+Dimension: DID
+Mann-Whitney U test: U = 35490.0000, p-value = 2.0225e-03
+Significant difference between sexes for DID (p < 0.05)
+Male mean: 3.023, Female mean: 3.254
+
+=== Creating Sex Comparison Radar Chart ===
+
+=== Testing Interaction Between Sex, Class Groups, and Dimensions ===
+
+=== Analysis for Sex=M, Class=9 ===
+Kruskal-Wallis: H=22.6090, p=1.5156e-04
+Significant difference found between dimensions.
+Dunn's post-hoc test p-values:
+          CAD       DID       PER       REL       STA
+CAD  1.000000  0.342763  1.000000  0.347351  0.574556
+DID  0.342763  1.000000  0.130674  1.000000  0.000872
+PER  1.000000  0.130674  1.000000  0.136254  1.000000
+REL  0.347351  1.000000  0.136254  1.000000  0.001040
+STA  0.574556  0.000872  1.000000  0.001040  1.000000
+
+=== Analysis for Sex=M, Class=10 ===
+Kruskal-Wallis: H=150.8696, p=1.3255e-31
+Significant difference found between dimensions.
+Dunn's post-hoc test p-values:
+              CAD           DID           PER           REL           STA
+CAD  1.000000e+00  5.453271e-07  1.000000e+00  4.143866e-04  4.257067e-08
+DID  5.453271e-07  1.000000e+00  5.276048e-09  1.000000e+00  1.528025e-27
+PER  1.000000e+00  5.276048e-09  1.000000e+00  1.222992e-05  2.238641e-06
+REL  4.143866e-04  1.000000e+00  1.222992e-05  1.000000e+00  2.787649e-21
+STA  4.257067e-08  1.528025e-27  2.238641e-06  2.787649e-21  1.000000e+00
+
+=== Analysis for Sex=M, Class=11 ===
+Kruskal-Wallis: H=38.3284, p=9.5867e-08
+Significant difference found between dimensions.
+Dunn's post-hoc test p-values:
+          CAD       DID       PER       REL       STA
+CAD  1.000000  0.004816  1.000000  0.004546  0.780590
+DID  0.004816  1.000000  0.454204  1.000000  0.000005
+PER  1.000000  0.454204  1.000000  0.405707  0.017250
+REL  0.004546  1.000000  0.405707  1.000000  0.000005
+STA  0.780590  0.000005  0.017250  0.000005  1.000000
+
+=== Analysis for Sex=F, Class=9 ===
+Kruskal-Wallis: H=64.8296, p=2.7949e-13
+Significant difference found between dimensions.
+Dunn's post-hoc test p-values:
+          CAD           DID           PER           REL           STA
+CAD  1.000000  1.029249e-02  5.951738e-01  3.681878e-03  6.713185e-02
+DID  0.010292  1.000000e+00  1.706251e-06  1.000000e+00  5.565510e-08
+PER  0.595174  1.706251e-06  1.000000e+00  4.618897e-07  1.000000e+00
+REL  0.003682  1.000000e+00  4.618897e-07  1.000000e+00  1.488617e-08
+STA  0.067132  5.565510e-08  1.000000e+00  1.488617e-08  1.000000e+00
+
+
+=== Analysis for Sex=F, Class=10 ===
+Kruskal-Wallis: H=52.2849, p=1.2026e-10
+Significant difference found between dimensions.
+Dunn's post-hoc test p-values:
+          CAD           DID       PER           REL           STA
+CAD  1.000000  3.221264e-03  1.000000  3.073124e-03  8.804320e-02
+DID  0.003221  1.000000e+00  0.017862  1.000000e+00  1.616201e-08
+PER  1.000000  1.786168e-02  1.000000  1.644629e-02  2.281126e-02
+REL  0.003073  1.000000e+00  0.016446  1.000000e+00  2.028306e-08
+STA  0.088043  1.616201e-08  0.022811  2.028306e-08  1.000000e+00
+
+=== Analysis for Sex=F, Class=11 ===
+Kruskal-Wallis: H=13.1102, p=1.0750e-02
+Significant difference found between dimensions.
+Dunn's post-hoc test p-values:
+          CAD       DID       PER       REL       STA
+CAD  1.000000  0.407138  1.000000  0.191471  1.000000
+DID  0.407138  1.000000  1.000000  1.000000  0.066102
+PER  1.000000  1.000000  1.000000  1.000000  0.693586
+REL  0.191471  1.000000  1.000000  1.000000  0.028698
+STA  1.000000  0.066102  0.693586  0.028698  1.000000
+
+Skipping analysis for Sex=nan, Class=10: insufficient data
+
+Skipping analysis for Sex=nan, Class=11: insufficient data
+
+Skipping analysis for Sex=nan, Class=9: insufficient data
+
+=== Summary Table: Mean Values by Dimension, Sex, and Class ===
+   Sex ClassGroup Dimension      mean  count
+0    F         10       CAD  2.703704     81
+1    F         10       DID  3.300000     90
+2    F         10       PER  2.814815     81
+3    F         10       REL  3.308642     81
+4    F         10       STA  2.190476     63
+5    F         11       CAD  2.361111     36
+6    F         11       DID  2.875000     40
+7    F         11       PER  2.638889     36
+8    F         11       REL  3.000000     36
+9    F         11       STA  2.107143     28
+10   F          9       CAD  2.774648     71
+11   F          9       DID  3.392405     79
+12   F          9       PER  2.361111     72
+13   F          9       REL  3.430556     72
+14   F          9       STA  2.127273     55
+15   M         10       CAD  2.562500    224
+16   M         10       DID  3.116466    249
+17   M         10       PER  2.484444    225
+18   M         10       REL  3.121076    223
+19   M         10       STA  1.874286    175
+20   M         11       CAD  2.244444     45
+21   M         11       DID  3.020833     48
+22   M         11       PER  2.577778     45
+23   M         11       REL  3.045455     44
+24   M         11       STA  1.828571     35
+25   M          9       CAD  2.438202     89
+26   M          9       DID  2.787879     99
+27   M          9       PER  2.377778     90
+28   M          9       REL  2.797753     89
+29   M          9       STA  2.085714     70
